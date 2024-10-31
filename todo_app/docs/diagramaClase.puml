@@ -1,16 +1,19 @@
 @startuml diagramaClase
 
-class ListaTareas implements Busqueda, Ordenamiento {
+class ListaTareas {
     - tareas: List<Tarea>
+    - ordenador: Ordenamiento
+    - buscador: Busqueda
     + getLista(): List<Tarea>
     + agregarTarea(tarea: Tarea)
     + eliminarTarea(tarea: Tarea)
     + getPendientes(): List<Tarea>
     + getCompletadas(): List<Tarea>
+    - calcularTiempoPromedio()
     + calcularEstadisticas()
 }
 
-class Tarea implements Edicion {
+class Tarea {
     - titulo: String
     - descripcion: String
     - fechaCreacion: Date
@@ -22,26 +25,35 @@ class Tarea implements Edicion {
     - completada: boolean
     + marcarCompletada()
     + agregarEtiqueta(etiqueta: String)
+    + editar()
 }
 
 interface Busqueda {
-    + buscar(titulo: String): List<Tarea>
-    + buscar(fecha: Date): List<Tarea>
+    + buscar(): List<Tarea>
 }
 
 interface Ordenamiento {
-    + ordenarPorTitulo()
-    + ordenarPorFecha()
-    + ordenarPorPrioridad()
+    + ordenar()
 }
 
-interface Edicion {
-    + editarTitulo(nuevoTit: String)
-    + editarDescripcion(nuevaDesc: String)
-    + editar(nuevaFecha: Date)
-    + editar(nuevaPrio: Prioridad)
-    + editar(nuevaCat: Categoria)
-    + editar(nuevoProg: int)
+class BuscadorTitulo implements Busqueda {
+    + buscar(titulo: String): List<Tarea>
+}
+
+class BuscadorFecha implements Busqueda {
+    + buscar(fecha: Date): List<Tarea>
+}
+
+class OrdenadorTitulo implements Ordenamiento {
+    + ordenar()
+}
+
+class OrdenadorFecha implements Ordenamiento {
+    + ordenar()
+}
+
+class OrdenadorPrioridad implements Ordenamiento {
+    + ordenar()
 }
 
 enum Prioridad {
@@ -56,6 +68,8 @@ enum Categoria {
     RECADOS
 }
 
-ListaTareas "1" --> "*" Tarea
+ListaTareas "1" *-- "*" Tarea
+ListaTareas *-- Busqueda
+ListaTareas *-- Ordenamiento
 
 @enduml
