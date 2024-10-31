@@ -1,0 +1,61 @@
+@startuml diagramaClase
+
+class ListaTareas implements Busqueda, Ordenamiento {
+    - tareas: List<Tarea>
+    + getLista(): List<Tarea>
+    + agregarTarea(tarea: Tarea)
+    + eliminarTarea(tarea: Tarea)
+    + getPendientes(): List<Tarea>
+    + getCompletadas(): List<Tarea>
+    + calcularEstadisticas()
+}
+
+class Tarea implements Edicion {
+    - titulo: String
+    - descripcion: String
+    - fechaCreacion: Date
+    - fechaVencimiento: Date
+    - prioridad: Prioridad
+    - etiquetas: List<String>
+    - categoria: Categoria
+    - progreso: int
+    - completada: boolean
+    + marcarCompletada()
+    + agregarEtiqueta(etiqueta: String)
+}
+
+interface Busqueda {
+    + buscar(titulo: String): List<Tarea>
+    + buscar(fecha: Date): List<Tarea>
+}
+
+interface Ordenamiento {
+    + ordenarPorTitulo()
+    + ordenarPorFecha()
+    + ordenarPorPrioridad()
+}
+
+interface Edicion {
+    + editarTitulo(nuevoTit: String)
+    + editarDescripcion(nuevaDesc: String)
+    + editar(nuevaFecha: Date)
+    + editar(nuevaPrio: Prioridad)
+    + editar(nuevaCat: Categoria)
+    + editar(nuevoProg: int)
+}
+
+enum Prioridad {
+    ALTA
+    MEDIA
+    BAJA
+}
+
+enum Categoria {
+    TRABAJO
+    PERSONAL
+    RECADOS
+}
+
+ListaTareas "1" --> "*" Tarea
+
+@enduml
