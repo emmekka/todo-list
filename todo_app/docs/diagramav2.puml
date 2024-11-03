@@ -1,0 +1,112 @@
+@startuml AppTareas
+
+enum Prioridad {
+    ALTA
+    MEDIA
+    BAJA
+}
+
+enum Categoria {
+    TRABAJO
+    PERSONAL
+    RECADOS
+}
+
+enum EstadoTarea {
+    PENDIENTE
+    COMPLETADA
+}
+
+interface EditarTareaParam {
+    titulo?:string
+    descripcion?:string
+    fechaVencimiento?:Date
+    prioridad?:Prioridad
+    progreso?:number
+    tiempoDedicado?:number
+}
+
+class Tarea {
+    -id: number
+    -titulo: string
+    -descripcion: string
+    -fechaVencimiento: Date
+    -prioridad: Prioridad
+    -estado: EstadoTarea
+    -progreso: number
+    -categoria: Categoria
+    -etiquetas: Etiqueta[]
+    -tiempoDedicado:number
+
+    +editarTarea(params:EditarTareaParams):void
+    +agregarEtiqueta(e:Etiqueta):void 
+}
+
+
+class GestorTareas {
+    -tareas: Tarea[]
+    -estadistica:Estadisticas
+
+    +agregarTarea(t: Tarea):void
+    +eliminarTarea(t:Tarea):void
+    +buscarTarea(t:Tarea, a:AlgoritmoBusqueda):Tarea[]
+    +ordenarTareas(a:AlgoritmoOrdenamiento):void
+    +obtenerEstadisticas(): Estadisticas
+}
+
+interface AlgoritmoBusqueda {
+    <i>buscar(t:Array<Tarea>, param:BuscadorParam):Tarea[]
+}
+
+class BusquedaTitulo implements AlgoritmoBusqueda{
+    +buscar(t:Array<Tarea>, param:BuscadorParam):Tarea[]
+}
+
+class BusquedaFecha implements AlgoritmoBusqueda{
+    +buscar(t:Array<Tarea>, param:BuscadorParam):Tarea[]
+}
+
+interface BuscadorParam {
+    titulo?:string
+    fecha?:Date
+}
+
+interface AlgoritmoOrdenamiento {
+    <i>ordenar(t:Array<Tarea>):void
+}
+
+class OrdenFecha implements AlgoritmoOrdenamiento{
+    +ordenar(t:Array<Tarea>):void
+}
+
+class OrdenTitulo implements AlgoritmoOrdenamiento{
+    +ordenar(t:Array<Tarea>):void
+}
+
+class OrdenPrioridad implements AlgoritmoOrdenamiento{
+    +ordenar(t:Array<Tarea>):void
+}
+
+class Etiqueta {
+    -nombre: string
+}
+
+class Estadisticas {
+    -tareasCompletadas: number
+    -tareasPendientes: number
+    -tiempoPromedio: number
+
+    +calcularEstadisticas(tareas: Tarea[])
+}
+
+Tarea --> Categoria
+Tarea *-- Etiqueta
+GestorTareas *.. Tarea
+GestorTareas <--u Estadisticas
+Tarea --> Prioridad
+Tarea --> EstadoTarea
+GestorTareas <---r AlgoritmoOrdenamiento
+GestorTareas <--l AlgoritmoBusqueda
+Tarea<..l EditarTareaParam
+BuscadorParam --> AlgoritmoBusqueda
+@enduml
